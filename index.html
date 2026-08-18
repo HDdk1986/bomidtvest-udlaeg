@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="da">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b4f55" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Udlæg" />
+    <title>Registrer udlæg</title>
+    <meta name="description" content="Mobil registrering af medarbejderudlæg til Bomidtvest." />
+    <meta property="og:title" content="Registrer udlæg" />
+    <meta property="og:description" content="Tag billeder af bonner og saml dem i én PDF klar til økonomi." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Registrer udlæg" />
+    <meta name="twitter:description" content="Tag billeder af bonner og saml dem i én PDF klar til økonomi." />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="hero">
+        <div class="brand-mark" aria-hidden="true">BM</div>
+        <div>
+          <p class="eyebrow">Bomidtvest · privat prøveversion</p>
+          <h1>Registrer udlæg</h1>
+          <p class="intro">Tag billeder af bonnen, udfyld oplysningerne og gør én samlet PDF klar til økonomi.</p>
+        </div>
+      </header>
+
+      <form id="expense-form" novalidate>
+        <section class="card" aria-labelledby="person-heading">
+          <div class="section-heading">
+            <span class="step">1</span>
+            <div><h2 id="person-heading">Dig og konteringen</h2><p>Oplysningerne bruges i mailen til økonomi.</p></div>
+          </div>
+
+          <label class="field">
+            <span>Din arbejdsmail</span>
+            <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="navn@bomidtvest.dk" required />
+          </label>
+
+          <fieldset class="field">
+            <legend>Vedrører udlægget et selskab eller en afdeling?</legend>
+            <div class="segmented">
+              <label><input type="radio" name="entityType" value="company" checked /><span>Selskab</span></label>
+              <label><input type="radio" name="entityType" value="department" /><span>Afdeling</span></label>
+            </div>
+          </fieldset>
+
+          <label class="field" id="company-field">
+            <span>Selskabsnummer</span>
+            <select name="company">
+              <option value="">Vælg selskab</option>
+              <option>3</option><option>5</option><option>7</option><option>8</option><option>11</option>
+              <option>26</option><option>28</option><option>29</option><option>30</option><option>31</option>
+            </select>
+          </label>
+
+          <label class="field is-hidden" id="department-field">
+            <span>Afdelingsnummer</span>
+            <input type="number" name="department" inputmode="numeric" min="1" step="1" placeholder="Skriv afdelingsnummer" />
+          </label>
+        </section>
+
+        <section class="card" aria-labelledby="expense-heading">
+          <div class="section-heading">
+            <span class="step">2</span>
+            <div><h2 id="expense-heading">Udlægget</h2><p>Fortæl kort, hvad købet vedrører.</p></div>
+          </div>
+
+          <label class="field">
+            <span>Type af udlæg</span>
+            <select name="expenseType" required>
+              <option value="">Vælg type</option>
+              <option value="food">Mad og drikke til møde</option>
+              <option value="course">Kursus</option>
+              <option value="parking">Parkering</option>
+              <option value="purchase">Indkøb</option>
+              <option value="transport">Transport</option>
+              <option value="other">Andet</option>
+            </select>
+          </label>
+
+          <label class="field is-hidden" id="meeting-field">
+            <span>Hvilket møde?</span>
+            <input type="text" name="meeting" placeholder="Fx Viceværtmøde Syd" />
+          </label>
+
+          <label class="field" id="description-field">
+            <span>Hvad er købt?</span>
+            <textarea name="description" rows="3" placeholder="Fx glas til kantinen"></textarea>
+            <small>Udfyldes ikke ved mad og drikke til et møde.</small>
+          </label>
+
+          <label class="field">
+            <span>Dato</span>
+            <input type="date" name="date" required />
+          </label>
+        </section>
+
+        <section class="card" aria-labelledby="receipt-heading">
+          <div class="section-heading">
+            <span class="step">3</span>
+            <div><h2 id="receipt-heading">Bonner og kvitteringer</h2><p>Tag billeder nu, eller vælg billeder fra telefonen.</p></div>
+          </div>
+
+          <label class="upload-zone" for="receipts">
+            <span class="camera-icon" aria-hidden="true">＋</span>
+            <strong>Tilføj billeder</strong>
+            <span>JPG, PNG eller billeder fra kameraet</span>
+          </label>
+          <input class="visually-hidden" id="receipts" type="file" name="receipts" accept="image/*" capture="environment" multiple />
+          <div id="receipt-list" class="receipt-list" aria-live="polite"></div>
+        </section>
+
+        <div class="submit-wrap">
+          <p class="privacy-note">Billederne behandles kun på din enhed i denne private prøveversion.</p>
+          <button class="primary-button" type="submit">Lav PDF og klargør mail</button>
+        </div>
+      </form>
+
+      <section id="result" class="result-panel is-hidden" aria-live="polite"></section>
+    </main>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

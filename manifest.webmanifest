@@ -1,0 +1,20 @@
+{
+  "name": "Bomidtvest – Registrer udlæg",
+  "short_name": "Udlæg",
+  "description": "Tag billeder af bonner og saml dem i én PDF klar til økonomi.",
+  "lang": "da-DK",
+  "id": "/index.html",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f9f8",
+  "theme_color": "#0b4f55",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
