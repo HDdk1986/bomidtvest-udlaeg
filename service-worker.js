@@ -1,4 +1,4 @@
-const CACHE_NAME = "bomidtvest-udlaeg-v1";
+const CACHE_NAME = "registrer-udlaeg-v2";
 const APP_SHELL = [
   "./",
   "./index.html",

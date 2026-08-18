@@ -1,5 +1,3 @@
-const ECONOMY_EMAIL = "oko@bomidtvest.dk";
-
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js").catch(() => {
@@ -195,7 +193,7 @@ function downloadFile(file) {
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-function renderResult(pdfFile, subject, body, entityLabel) {
+function renderResult(pdfFile, subject, body, entityLabel, economyEmail) {
   if (generatedPdfUrl) URL.revokeObjectURL(generatedPdfUrl);
   generatedPdfUrl = URL.createObjectURL(pdfFile);
   const sizeMb = (pdfFile.size / 1024 / 1024).toFixed(1).replace(".0", "");
@@ -205,24 +203,24 @@ function renderResult(pdfFile, subject, body, entityLabel) {
     <div class="success-icon" aria-hidden="true">✓</div>
     <p class="eyebrow">PDF klar</p>
     <h2>Udlægget er samlet</h2>
-    <p class="result-copy">${selectedReceipts.length} ${selectedReceipts.length === 1 ? "billede" : "billeder"} er samlet i <strong>${pdfFile.name}</strong> (${sizeMb} MB). Mailen er klar til ${ECONOMY_EMAIL}.</p>
+    <p class="result-copy">${selectedReceipts.length} ${selectedReceipts.length === 1 ? "billede" : "billeder"} er samlet i <strong>${pdfFile.name}</strong> (${sizeMb} MB). Mailen er klar til ${economyEmail}.</p>
     <div class="result-summary"><span>${entityLabel}</span><span>${expenseTypeLabel(form.elements.expenseType.value)}</span><span>${form.elements.date.value}</span></div>
     <button type="button" class="primary-button" id="share-pdf">Del PDF til mail</button>
     <button type="button" class="secondary-button" id="open-mail">Download PDF og åbn mailudkast</button>
     <a class="text-button" href="${generatedPdfUrl}" download="${pdfFile.name}">Download kun PDF</a>
-    <p class="result-help">På mobilen: Tryk “Del PDF til mail”, vælg Outlook eller Mail, indsæt <strong>${ECONOMY_EMAIL}</strong> som modtager og tryk Send.</p>
+    <p class="result-help">På mobilen: Tryk “Del PDF til mail”, vælg Outlook eller Mail, indsæt <strong>${economyEmail}</strong> som modtager og tryk Send.</p>
   `;
 
   resultPanel.querySelector("#share-pdf").addEventListener("click", async () => {
     try {
-      await navigator.clipboard?.writeText(ECONOMY_EMAIL);
+      await navigator.clipboard?.writeText(economyEmail);
     } catch (_) {}
 
     if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [pdfFile] }))) {
       try {
         await navigator.share({
           title: subject,
-          text: `${body}\n\nModtager (kopieret): ${ECONOMY_EMAIL}`,
+          text: `${body}\n\nModtager (kopieret): ${economyEmail}`,
           files: [pdfFile],
         });
         return;
@@ -232,12 +230,12 @@ function renderResult(pdfFile, subject, body, entityLabel) {
     }
 
     downloadFile(pdfFile);
-    window.location.href = `mailto:${ECONOMY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + "\n\nPDF-filen er downloadet og skal vedhæftes.")}`;
+    window.location.href = `mailto:${economyEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + "\n\nPDF-filen er downloadet og skal vedhæftes.")}`;
   });
 
   resultPanel.querySelector("#open-mail").addEventListener("click", () => {
     downloadFile(pdfFile);
-    window.location.href = `mailto:${ECONOMY_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + "\n\nPDF-filen er downloadet og skal vedhæftes.")}`;
+    window.location.href = `mailto:${economyEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + "\n\nPDF-filen er downloadet og skal vedhæftes.")}`;
   });
 
   resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -307,7 +305,7 @@ form.addEventListener("submit", async (event) => {
       form.elements.email.value,
     ].join("\n");
 
-    renderResult(pdfFile, subject, body, entityLabel);
+    renderResult(pdfFile, subject, body, entityLabel, form.elements.economyEmail.value.trim());
   } catch (error) {
     resultPanel.classList.remove("is-hidden");
     resultPanel.innerHTML = `<h2>PDF’en kunne ikke laves</h2><p class="error-copy">${error.message || "Prøv igen med JPG- eller PNG-billeder."}</p>`;

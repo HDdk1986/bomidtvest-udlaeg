@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Udlæg" />
     <title>Registrer udlæg</title>
-    <meta name="description" content="Mobil registrering af medarbejderudlæg til Bomidtvest." />
+    <meta name="description" content="Mobil registrering af medarbejderudlæg." />
     <meta property="og:title" content="Registrer udlæg" />
     <meta property="og:description" content="Tag billeder af bonner og saml dem i én PDF klar til økonomi." />
     <meta property="og:type" content="website" />
@@ -26,7 +26,7 @@
       <header class="hero">
         <div class="brand-mark" aria-hidden="true">BM</div>
         <div>
-          <p class="eyebrow">Bomidtvest · privat prøveversion</p>
+          <p class="eyebrow">Enkel registrering af medarbejderudlæg</p>
           <h1>Registrer udlæg</h1>
           <p class="intro">Tag billeder af bonnen, udfyld oplysningerne og gør én samlet PDF klar til økonomi.</p>
         </div>
@@ -41,7 +41,13 @@
 
           <label class="field">
             <span>Din arbejdsmail</span>
-            <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="navn@bomidtvest.dk" required />
+            <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="navn@virksomhed.dk" required />
+          </label>
+
+          <label class="field">
+            <span>Økonomis mailadresse</span>
+            <input type="email" name="economyEmail" inputmode="email" placeholder="oekonomi@virksomhed.dk" required />
+            <small>PDF og mailudkast klargøres til denne adresse.</small>
           </label>
 
           <fieldset class="field">
