@@ -2,7 +2,7 @@ const ECONOMY_EMAIL = "oko@bomidtvest.dk";
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js").catch(() => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {
       // Appen fungerer fortsat online, hvis en browser afviser offline-cachen.
     });
   });
