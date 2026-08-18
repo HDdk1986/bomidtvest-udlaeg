@@ -19,12 +19,17 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="./icon.svg" />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=6" />
   </head>
   <body>
     <main class="app-shell">
       <header class="hero">
-        <div class="brand-mark" aria-hidden="true">U</div>
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M7 3h10a1 1 0 0 1 1 1v17l-3-2-3 2-3-2-3 2V4a1 1 0 0 1 1-1Z" />
+            <path d="M9 8h6M9 12h6M9 16h3" />
+          </svg>
+        </div>
         <div>
           <p class="eyebrow">Enkel registrering af medarbejderudlæg</p>
           <h1>Registrer udlæg</h1>
@@ -42,12 +47,6 @@
           <label class="field">
             <span>Din arbejdsmail</span>
             <input type="email" name="email" autocomplete="email" inputmode="email" placeholder="navn@virksomhed.dk" required />
-          </label>
-
-          <label class="field">
-            <span>Økonomis mailadresse</span>
-            <input type="email" name="economyEmail" inputmode="email" placeholder="oekonomi@virksomhed.dk" required />
-            <small>PDF og mailudkast klargøres til denne adresse.</small>
           </label>
 
           <fieldset class="field">
@@ -83,7 +82,7 @@
             <span>Type af udlæg</span>
             <select name="expenseType" required>
               <option value="">Vælg type</option>
-              <option value="food">Mad og drikke til møde</option>
+              <option value="food">Forplejning</option>
               <option value="course">Kursus</option>
               <option value="parking">Parkering</option>
               <option value="purchase">Indkøb</option>
@@ -98,9 +97,8 @@
           </label>
 
           <label class="field" id="description-field">
-            <span>Hvad er købt?</span>
-            <textarea name="description" rows="3" placeholder="Fx glas til kantinen"></textarea>
-            <small>Udfyldes ikke ved mad og drikke til et møde.</small>
+            <span id="description-label">Hvad vedrører udlægget?</span>
+            <textarea name="description" rows="3" placeholder="Vælg først type af udlæg"></textarea>
           </label>
 
           <label class="field">
@@ -132,6 +130,6 @@
 
       <section id="result" class="result-panel is-hidden" aria-live="polite"></section>
     </main>
-    <script src="./app.js" defer></script>
+    <script src="./app.js?v=6" defer></script>
   </body>
 </html>
