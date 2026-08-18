@@ -1,9 +1,9 @@
-const CACHE_NAME = "registrer-udlaeg-v2";
+const CACHE_NAME = "registrer-udlaeg-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./styles.css",
-  "./app.js",
+  "./styles.css?v=6",
+  "./app.js?v=6",
   "./manifest.webmanifest",
   "./icon.svg"
 ];
