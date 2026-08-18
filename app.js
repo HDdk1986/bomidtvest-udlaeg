@@ -11,6 +11,7 @@ const companyField = document.querySelector("#company-field");
 const departmentField = document.querySelector("#department-field");
 const meetingField = document.querySelector("#meeting-field");
 const descriptionField = document.querySelector("#description-field");
+const descriptionLabel = document.querySelector("#description-label");
 const receiptsInput = document.querySelector("#receipts");
 const receiptList = document.querySelector("#receipt-list");
 const resultPanel = document.querySelector("#result");
@@ -33,6 +34,22 @@ function updateExpenseFields() {
   descriptionField.classList.toggle("is-hidden", isFood);
   form.elements.meeting.required = isFood;
   form.elements.description.required = !isFood;
+
+  if (!isFood) {
+    const config = expenseDescriptionConfig(form.elements.expenseType.value);
+    descriptionLabel.textContent = config.label;
+    form.elements.description.placeholder = config.placeholder;
+  }
+}
+
+function expenseDescriptionConfig(value) {
+  return {
+    course: { label: "Hvilket kursus?", placeholder: "Fx BL-kursus i Aarhus" },
+    parking: { label: "Hvad var parkeringen i forbindelse med?", placeholder: "Fx BL-kursus d. 10/8" },
+    purchase: { label: "Hvad er købt?", placeholder: "Fx glas til kantinen" },
+    transport: { label: "Hvad var transporten i forbindelse med?", placeholder: "Fx tog til kursus i Aarhus" },
+    other: { label: "Hvad vedrører udlægget?", placeholder: "Beskriv kort udlæggets formål" },
+  }[value] || { label: "Hvad vedrører udlægget?", placeholder: "Vælg først type af udlæg" };
 }
 
 function renderReceipts() {
@@ -164,7 +181,7 @@ function buildPdf(images) {
 
 function expenseTypeLabel(value) {
   return {
-    food: "Mad og drikke til møde",
+    food: "Forplejning",
     course: "Kursus",
     parking: "Parkering",
     purchase: "Indkøb",
@@ -193,7 +210,7 @@ function downloadFile(file) {
   setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-function renderResult(pdfFile, subject, body, entityLabel, economyEmail) {
+function renderResult(pdfFile, subject, body, entityLabel) {
   if (generatedPdfUrl) URL.revokeObjectURL(generatedPdfUrl);
   generatedPdfUrl = URL.createObjectURL(pdfFile);
   const sizeMb = (pdfFile.size / 1024 / 1024).toFixed(1).replace(".0", "");
@@ -203,24 +220,20 @@ function renderResult(pdfFile, subject, body, entityLabel, economyEmail) {
     <div class="success-icon" aria-hidden="true">✓</div>
     <p class="eyebrow">PDF klar</p>
     <h2>Udlægget er samlet</h2>
-    <p class="result-copy">${selectedReceipts.length} ${selectedReceipts.length === 1 ? "billede" : "billeder"} er samlet i <strong>${pdfFile.name}</strong> (${sizeMb} MB). Mailen er klar til ${economyEmail}.</p>
+    <p class="result-copy">${selectedReceipts.length} ${selectedReceipts.length === 1 ? "billede" : "billeder"} er samlet i <strong>${pdfFile.name}</strong> (${sizeMb} MB). Mailudkastet er klar.</p>
     <div class="result-summary"><span>${entityLabel}</span><span>${expenseTypeLabel(form.elements.expenseType.value)}</span><span>${form.elements.date.value}</span></div>
     <button type="button" class="primary-button" id="share-pdf">Del PDF til mail</button>
     <button type="button" class="secondary-button" id="open-mail">Download PDF og åbn mailudkast</button>
     <a class="text-button" href="${generatedPdfUrl}" download="${pdfFile.name}">Download kun PDF</a>
-    <p class="result-help">På mobilen: Tryk “Del PDF til mail”, vælg Outlook eller Mail, indsæt <strong>${economyEmail}</strong> som modtager og tryk Send.</p>
+    <p class="result-help">På mobilen: Tryk “Del PDF til mail”, vælg Outlook eller Mail, vælg økonomi som modtager og tryk Send.</p>
   `;
 
   resultPanel.querySelector("#share-pdf").addEventListener("click", async () => {
-    try {
-      await navigator.clipboard?.writeText(economyEmail);
-    } catch (_) {}
-
     if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [pdfFile] }))) {
       try {
         await navigator.share({
           title: subject,
-          text: `${body}\n\nModtager (kopieret): ${economyEmail}`,
+          text: body,
           files: [pdfFile],
         });
         return;
@@ -230,12 +243,12 @@ function renderResult(pdfFile, subject, body, entityLabel, economyEmail) {
     }
 
     downloadFile(pdfFile);
-    window.location.href = `mailto:${economyEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + "\n\nPDF-filen er downloadet og skal vedhæftes.")}`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + "\n\nPDF-filen er downloadet og skal vedhæftes.")}`;
   });
 
   resultPanel.querySelector("#open-mail").addEventListener("click", () => {
     downloadFile(pdfFile);
-    window.location.href = `mailto:${economyEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + "\n\nPDF-filen er downloadet og skal vedhæftes.")}`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body + "\n\nPDF-filen er downloadet og skal vedhæftes.")}`;
   });
 
   resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -288,7 +301,7 @@ form.addEventListener("submit", async (event) => {
     const subject = `Udlæg – ${entityLabel} – ${typeLabel} – ${form.elements.date.value}`;
     const details = form.elements.expenseType.value === "food"
       ? `Møde: ${form.elements.meeting.value}`
-      : `Hvad er købt: ${form.elements.description.value}`;
+      : `${expenseDescriptionConfig(form.elements.expenseType.value).label.replace(/\?$/, "")}: ${form.elements.description.value}`;
     const body = [
       "Hej økonomi,",
       "",
@@ -305,7 +318,7 @@ form.addEventListener("submit", async (event) => {
       form.elements.email.value,
     ].join("\n");
 
-    renderResult(pdfFile, subject, body, entityLabel, form.elements.economyEmail.value.trim());
+    renderResult(pdfFile, subject, body, entityLabel);
   } catch (error) {
     resultPanel.classList.remove("is-hidden");
     resultPanel.innerHTML = `<h2>PDF’en kunne ikke laves</h2><p class="error-copy">${error.message || "Prøv igen med JPG- eller PNG-billeder."}</p>`;
